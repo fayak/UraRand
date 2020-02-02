@@ -12,6 +12,8 @@ GPIO_PIN = 7
 loop = True
 
 def _init_counter(callback):
+    print("Init")
+
     bus = smbus.SMBus(1)
     bus.write_byte(I2C_ADDR, 0x71)
 
@@ -22,6 +24,8 @@ def _init_counter(callback):
     GPIO.add_event_callback(GPIO_PIN, callback)
 
 def _stop_counter():
+    print("Stop")
+
     bus = smbus.SMBus(1)
     bus.write_byte(I2C_ADDR, 0)
 
