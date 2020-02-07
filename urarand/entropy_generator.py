@@ -62,3 +62,8 @@ class EntropyGenerator(EntropyGeneratorModel):
 class EntropyGenerator_2_bits(EntropyGenerator):
     def _delta_to_bits(self, delta):
         return str((delta % 2)) + str((delta // 2) % 2)
+
+@dataclass
+class EntropyGenerator_4_bits(EntropyGenerator):
+    def _delta_to_bits(self, delta):
+        return str((delta % 2)) + str((delta // 2) % 2) + str((delta // 4) % 2) + str((delta // 8) % 2)
