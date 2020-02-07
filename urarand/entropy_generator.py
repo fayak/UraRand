@@ -13,7 +13,7 @@ class EntropyGeneratorModel():
 
 @dataclass
 class EntropyGenerator(EntropyGeneratorModel):
-    entropy_path: str
+    entropy_path: str = "./" + str(__qualname__) + ".bin"
 
     counter: int = 0
 
@@ -29,9 +29,10 @@ class EntropyGenerator(EntropyGeneratorModel):
 
     get_tick: Callable[[], int] = lambda : time.perf_counter_ns() // 1000
 
-    def tick(self, *args, **kwargs):
-        print('*', end='', flush=True)
+    def _delta_to_bits(self, delta):
+        return str(delta % 2)
 
+    def tick(self, *args, **kwargs):
         if self.counter == 0:
             self.t0 = self.get_tick()
             self.counter += 1
@@ -39,10 +40,12 @@ class EntropyGenerator(EntropyGeneratorModel):
         t1 = self.get_tick()
         delta = (t1 - self.t0)
 
-        self.entropy_acc += str((delta % 2))
+        self.entropy_acc += self._delta_to_bits(delta)
         if self.counter % 8 == 0:
-            self.entropy += chr(int(self.entropy_acc, 2)).encode("utf-8")
-            self.entropy_acc = ""
+            while len(self.entropy_acc) > 8:
+                print('*' * 8, end='', flush=True)
+                self.entropy += bytes([int(self.entropy_acc[:8], 2)])
+                self.entropy_acc = self.entropy_acc[8:]
         self.counter += 1
         self.t0 = t1
 
@@ -54,3 +57,8 @@ class EntropyGenerator(EntropyGeneratorModel):
     def dump_entropy(self):
         with open(self.entropy_path, 'ab+') as f:
             f.write(self.entropy)
+
+@dataclass
+class EntropyGenerator_2_bits(EntropyGenerator):
+    def _delta_to_bits(self, delta):
+        return str((delta % 2)) + str((delta // 2) % 2)
