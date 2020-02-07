@@ -27,7 +27,11 @@ def _stop_counter():
     print("Stop")
 
     bus = smbus.SMBus(1)
-    bus.write_byte(I2C_ADDR, 0)
+    for i in range(10):
+        try:
+            bus.write_byte(I2C_ADDR, 0)
+        except OSError:
+            time.sleep(0.01)
 
 def _signal_handler(sig, frame):
     global loop

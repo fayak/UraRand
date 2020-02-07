@@ -60,10 +60,12 @@ class EntropyGenerator(EntropyGeneratorModel):
 
 @dataclass
 class EntropyGenerator_2_bits(EntropyGenerator):
+    entropy_path: str = "./" + str(__qualname__) + ".bin"
     def _delta_to_bits(self, delta):
         return str((delta % 2)) + str((delta // 2) % 2)
 
 @dataclass
 class EntropyGenerator_4_bits(EntropyGenerator):
+    entropy_path: str = "./" + str(__qualname__) + ".bin"
     def _delta_to_bits(self, delta):
         return str((delta % 2)) + str((delta // 2) % 2) + str((delta // 4) % 2) + str((delta // 8) % 2)
